@@ -1,0 +1,17 @@
+{
+  "type": "service_account",
+  "project_id": "blog-api-project",
+  "private_key_id": "moderator-key-12345",
+  "private_key": "\nMIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEAzrKRTcW6u+equnBS\n4l+e2ymItes6VoHvQ9322O+zymWDOUFRX6h422xx/IDdMBzmJcLjQI2xdBEQ9Qg9\nBE5Q3wIDAQABAkBjCSoX0nqzV7/0zqbX8iriJZdsWsW790vV/78rmEZT3c00+KBw\n8oTVGXLPK65e0y2qzw9lQStDgfc3nP/5Gp0BAiEA6o4gjkNxmoExAfkYHcSOIhiH\nMpWxnjBquO58rye9HYECIQDhmGtKN/uAycHujZNXN7HJEM5lBE4zCaA1Cbsk78te\nXwIhAMlMowoVPclA+QNdeWIKz4TZkiZKrH47xUvjeWSFcVuBAiEAy+0l/z8/4BmB\nbw0XhZ3Y3jKNAA+2SLiI06jqPOdu5O0CIQDnbyWblrRVQgL4R9wkV1cZi8Sd06fz\nGQJ1N/hkq0pNfg==\n",
+  "client_email": "moderator@blog-api-project.iam.gserviceaccount.com",
+  "client_id": "123456789012345678902",
+  "auth_uri": "http://localhost:8002/auth/authorize",
+  "token_uri": "http://localhost:8002/auth/token",
+  "auth_provider_x509_cert_url": "http://localhost:8002/auth/certs",
+  "client_x509_cert_url": "http://localhost:8002/auth/certs/moderator",
+  "universe_domain": "localhost",
+  "scopes": [
+    "posts.write",
+    "comments.admin"
+  ]
+}

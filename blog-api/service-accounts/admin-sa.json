@@ -1,0 +1,18 @@
+{
+  "type": "service_account",
+  "project_id": "blog-api-project",
+  "private_key_id": "admin-key-12345",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEA0DtZ6koi47HPUueN\nPnJVjGi9TzHptr0UegVy5IxFcZLZij7t59GExgLyH7tyMs/nN6T09Di7ejJOjN5Y\nAgk3UQIDAQABAkEAnj8MlQWkQB/n7Bw2deeT5fHPNHk9IPfOsPClINUNDUJqfqgk\nAwVVsbv9oXJPDze0tn+d5EfpBhpFf3zLlVkcVQIhAOsIKObNuoCW0uoa89sW2Nmx\nlwhcy7XRFzqEOjhYxmdvAiEA4s8cjAnAyINfd4js54cXB4eAj4VufEcAV3+DcWHM\n7T8CIQDNzdBbAmy8atV3b3B3OVNblJlnFjK/G79WWzDL5FifewIgR/XAL+oUQUn1\nKx7FUzv4IYprTp3eDQ4V3Kz3TizicM8CIQDRKQXk2tyD8PeWeBWiuW5z8/XKIkvS\n11CkR/fIGQ0I9Q==\n-----END PRIVATE KEY-----\n",
+  "client_email": "admin@blog-api-project.iam.gserviceaccount.com",
+  "client_id": "123456789012345678901",
+  "auth_uri": "http://localhost:8002/auth/authorize",
+  "token_uri": "http://localhost:8002/auth/token",
+  "auth_provider_x509_cert_url": "http://localhost:8002/auth/certs",
+  "client_x509_cert_url": "http://localhost:8002/auth/certs/admin",
+  "universe_domain": "localhost",
+  "scopes": [
+    "posts.admin",
+    "comments.admin",
+    "admin.manage"
+  ]
+}
