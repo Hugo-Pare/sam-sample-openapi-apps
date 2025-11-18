@@ -1,0 +1,108 @@
+# Agent Configuration File: A2A ADK Agents Configurations
+#
+# This file has the configuration for the A2A ADK agents.
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG # Changed from INFO to DEBUG to capture ADK INFO logs
+  log_file: pet_store.log
+
+# Shared SAM config
+!include shared_config.yaml
+
+apps:
+  - name: openapi_blog_agent_app
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+  
+    # --- App Level Config ---
+    app_config:
+      
+      namespace: ${NAMESPACE}
+      supports_streaming: true
+      agent_name: "OpenAPIBlogAgent"
+      display_name: "OpenAPI Blog Agent"
+
+      model:
+        <<: *general_model
+        #parallel_tool_calls: false
+      instruction: |
+        You are a blog management agent that can create, update, delete, and retrieve blog posts via the Blog API.
+
+      tools:
+        - tool_type: openapi
+          specification_url: "http://localhost:8002/openapi.json"
+          base_url: "http://localhost:8002"
+          # deny_list: []
+          # allow_list: []
+
+          auth:
+            # Auth using API Key in header
+            # type: apikey
+            # in: header
+            # name: X-API-Key
+            # value: "comment-key-12345"
+
+            # Auth using Bearer Token with Admin service account
+            type: serviceaccount
+            service_account_json: |
+              {
+                "type": "service_account",
+                "project_id": "blog-api-project",
+                "private_key_id": "moderator-key-12345",
+                "private_key": "\nMIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEAzrKRTcW6u+equnBS\n4l+e2ymItes6VoHvQ9322O+zymWDOUFRX6h422xx/IDdMBzmJcLjQI2xdBEQ9Qg9\nBE5Q3wIDAQABAkBjCSoX0nqzV7/0zqbX8iriJZdsWsW790vV/78rmEZT3c00+KBw\n8oTVGXLPK65e0y2qzw9lQStDgfc3nP/5Gp0BAiEA6o4gjkNxmoExAfkYHcSOIhiH\nMpWxnjBquO58rye9HYECIQDhmGtKN/uAycHujZNXN7HJEM5lBE4zCaA1Cbsk78te\nXwIhAMlMowoVPclA+QNdeWIKz4TZkiZKrH47xUvjeWSFcVuBAiEAy+0l/z8/4BmB\nbw0XhZ3Y3jKNAA+2SLiI06jqPOdu5O0CIQDnbyWblrRVQgL4R9wkV1cZi8Sd06fz\nGQJ1N/hkq0pNfg==\n",
+                "client_email": "moderator@blog-api-project.iam.gserviceaccount.com",
+                "client_id": "123456789012345678902",
+                "auth_uri": "http://localhost:8002/auth/authorize",
+                "token_uri": "http://localhost:8002/auth/token",
+                "auth_provider_x509_cert_url": "http://localhost:8002/auth/certs",
+                "client_x509_cert_url": "http://localhost:8002/auth/certs/moderator",
+                "universe_domain": "localhost",
+                "scopes": [
+                  "posts.write",
+                  "comments.admin"
+                ]
+              }
+            scopes: ["posts.admin", "comments.admin", "admin.manage"]
+
+        - tool_type: builtin-group
+          group_name: "artifact_management"
+        - tool_type: builtin-group
+          group_name: "data_analysis"
+
+      session_service:
+        type: "sql"
+        database_url: "${BLOG_AGENT_DATABASE_URL, sqlite:///blog-agent.db}"
+        default_behavior: "PERSISTENT"        
+      artifact_service:
+        type: "filesystem"
+        base_path: "/tmp/samv2"
+        artifact_scope: namespace
+      enable_embed_resolution: true
+      enable_artifact_content_instruction: true
+  
+      # --- Agent Card Definition ---
+      agent_card:
+        description: "An agent that interacts with the Blog API to manage blog posts."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text", "file"]
+        skills: []
+          
+  
+      # --- Discovery & Communication ---
+      agent_card_publishing: { interval_seconds: 10 }
+      agent_discovery: { enabled: false }
+      inter_agent_communication:
+        allow_list: []
+        request_timeout_seconds: 120
+      trust_manager:
+        enabled: ${TRUST_MANAGER_ENABLED, false}  # Enable or disable the trust manager
+        card_publish_interval_seconds: 10  # Publish every 10 seconds for testing
+        card_expiration_days: 7  # 1 week for development
+        verification_mode: "permissive"  # Log warnings, don't fail during initial testing
+        clock_skew_tolerance_seconds: 300  # 5 minutes tolerance
+        enable_time_validation: true
+        # JWT Configuration (Phase 2)
+        jwt_default_ttl_seconds: 3600  # 1 hour default JWT lifetime
+        jwt_max_ttl_seconds: 86400     # 24 hours maximum JWT lifetime
