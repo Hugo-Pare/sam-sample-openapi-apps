@@ -26,7 +26,6 @@ apps:
 
       model:
         <<: *general_model
-        #parallel_tool_calls: false
       instruction: |
         You are a blog management agent that can create, update, delete, and retrieve blog posts via the Blog API.
 
@@ -39,32 +38,55 @@ apps:
 
           auth:
             # Auth using API Key in header
-            # type: apikey
-            # in: header
-            # name: X-API-Key
-            # value: "comment-key-12345"
+            type: apikey
+            in: header
+            name: X-API-Key
+            value: "comment-key-12345" # or "reader-key-12345"
+
+            # Auth using Bearer Token with Moderator service account
+            # type: serviceaccount
+            # service_account_json: |
+            #   {
+            #     "type": "service_account",
+            #     "project_id": "blog-api-project",
+            #     "private_key_id": "moderator-key-12345",
+            #     "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCOevw/+8UCCjYA\nMRZgTgo/cSGJ8/S9IHDYT7Ld/MTl6RQUfRmCGKS1pCtXDjtkj5QB8bA2rvuME6ob\n/rAgNFqeP4hpmDfPYJUzs5+oXyK3PwC83mQ82GsN4HC828ggN6NKyJq1Utxn1WE8\nwMRm3v65NA5gUsiilBFnrL/e3JR3J9sbgL1jlarmbv+r5xcPLCzB4z7TlkmBtADF\n4vPmh8INMimsFfKeGY+mfkwqRdMatSxaBkirQ5uJ/+cwcD+boj3QxYj3ftFGOvAy\nr58yJuAEZiBnlYus/dtD3qjKKy8quRTiNja3hitboCVMpOR2WG5P63hYuDBgbHQX\n8Frh+mthAgMBAAECggEAALHF7Hbo7HwJwYGmaFpBBQhOCkrWLhzMHVXIG0+0faK0\n7m5MqJxqTcNVfb4L7o8fliHW2BwNYvmj5NvegQ2tmmNYt3EJO+7D02XETluxAt/L\npwqrcOYkzBjEW+XzVAA0Fh95AjoQ6Rr6YhjWFuKZLw8QpIoKwHYZyUhSLWnO+cSw\nrpQ+hmztXazTvmRJ3n1blDO8rgsVVYz5jE7KXanBaQGneuQPUEmFm8l4r9FQURd+\nXZWu88ED2J0F0Rz11NNhlA5rFpAj6kh8x5KiO/MzTGQGPmykXDd1eSpVev+5IUcF\n9oW50Eq4H3zthpEZmaO7g5AVVtzRl6npCImGn9FUBQKBgQDDHCM4opVvSyWfjnt5\nFyyQNmfgrPGCMhUux22pWfWMOCa0L25RvJlexxM5uW2Tqo0CUc52WQq0/GWOBpCz\nRyu6pcu3V6snyqZbrgxWLVN+pqzDIJMvVHBzdkYVKpHNOZbDQwG9OftRAI2fOQsg\neE5PwRRkZYCVKwVrxSUAIB1x5QKBgQC68iIxmZEyghYUiQ60p3hgdEDjkeUxqhJI\n/B3K9CElQlNmn6/QJ/X0pi7qq548CnTfGXoc6EFeiSqZtLRhbEUIQrA8Xf2fZGqF\nG8hfugIiLZP9E4o/VuThMRCctQI0MP6YP1iJxcf3Phy7PpQWnjLe8GgnbcfnwyAU\nL+IiLeXrzQKBgGdgbTkAy/Sf+FtF/x31rWLrsLZWa8/0AU071Vq5k2SsC7XEu8sL\nBqg1Cna3TNvErdngxmfmXcnvQU+zItAakYzfc8S86q62rNY+rcKrWWXtofPxOosF\nTl+e9xsX5xC5xqvGwRElu4b7qA4JB2A43iVbxBY9wZdHqCOl3Sjn2zIRAoGBAJ8i\nPB8ylNmEyJzkamM3Z43bh9zvtUTIe9Yq3oWDuK9JvUrPRc6QJZsC108llYWQdRnw\nSvVOc06wvlWm8CE6E61Lb0+DxsAmr1Hta2ypHuXPHHlCZ90w75YNuRFcN6sLxbz9\ntzVX6bc55SUyyMZUFgOWa2Kc3Z0YiTcF552mqmBFAoGBAK9MkVx2RUqklgG7+sAn\n87lnjQYyztHB5JGOSqEvgLP6h6r07HFmSuduOsxxvB2accoFZ8DSBKMjmffjRHLE\n54ImewkzkGlen95uwWIHf2zlLiecFg/cxNrBaZl6d837BddMv2XbOPrhxcb0T1IL\ndN52MawrPSmfb5qSmhxPCa6Q\n-----END PRIVATE KEY-----",
+            #     "client_email": "moderator@blog-api-project.iam.gserviceaccount.com",
+            #     "client_id": "123456789012345678902",
+            #     "auth_uri": "http://localhost:8002/auth/authorize",
+            #     "token_uri": "http://localhost:8002/auth/token",
+            #     "auth_provider_x509_cert_url": "http://localhost:8002/auth/certs",
+            #     "client_x509_cert_url": "http://localhost:8002/auth/certs/moderator",
+            #     "universe_domain": "localhost",
+            #     "scopes": [
+            #       "posts.write",
+            #       "comments.admin"
+            #     ]
+            #   }
+            # scopes: ["posts.admin", "comments.admin"]
 
             # Auth using Bearer Token with Admin service account
-            type: serviceaccount
-            service_account_json: |
-              {
-                "type": "service_account",
-                "project_id": "blog-api-project",
-                "private_key_id": "moderator-key-12345",
-                "private_key": "\nMIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEAzrKRTcW6u+equnBS\n4l+e2ymItes6VoHvQ9322O+zymWDOUFRX6h422xx/IDdMBzmJcLjQI2xdBEQ9Qg9\nBE5Q3wIDAQABAkBjCSoX0nqzV7/0zqbX8iriJZdsWsW790vV/78rmEZT3c00+KBw\n8oTVGXLPK65e0y2qzw9lQStDgfc3nP/5Gp0BAiEA6o4gjkNxmoExAfkYHcSOIhiH\nMpWxnjBquO58rye9HYECIQDhmGtKN/uAycHujZNXN7HJEM5lBE4zCaA1Cbsk78te\nXwIhAMlMowoVPclA+QNdeWIKz4TZkiZKrH47xUvjeWSFcVuBAiEAy+0l/z8/4BmB\nbw0XhZ3Y3jKNAA+2SLiI06jqPOdu5O0CIQDnbyWblrRVQgL4R9wkV1cZi8Sd06fz\nGQJ1N/hkq0pNfg==\n",
-                "client_email": "moderator@blog-api-project.iam.gserviceaccount.com",
-                "client_id": "123456789012345678902",
-                "auth_uri": "http://localhost:8002/auth/authorize",
-                "token_uri": "http://localhost:8002/auth/token",
-                "auth_provider_x509_cert_url": "http://localhost:8002/auth/certs",
-                "client_x509_cert_url": "http://localhost:8002/auth/certs/moderator",
-                "universe_domain": "localhost",
-                "scopes": [
-                  "posts.write",
-                  "comments.admin"
-                ]
-              }
-            scopes: ["posts.admin", "comments.admin", "admin.manage"]
+            # type: serviceaccount
+            # service_account_json: |
+            #   {
+            #     "type": "service_account",
+            #     "project_id": "blog-api-project",
+            #     "private_key_id": "admin-key-12345",
+            #     "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDzvUadfWgbm16j\nzRtNIQSSE/wBbnHvnZLqXXKCFnEk568f89hJjKCpiHLuklVd0q2qamWWpCTP1r8A\nAORpmTNBl6LPm3grMWeIboZAV60qDEOYFxlT8aNAOJzZBR0U9tlhaWkCI6GM45j9\nPXJ0nSbhrh1UhIPX9zEWB4OzGhPKwY/4nQhQDN9mJ9z6qisZw1mvoBabUsXNC7+r\nSwt3Y7SnCF6H/TBv4uu4aOVdxQs5QetEZm3YLw7QDiiVwbyDB1ss37ohJDm1ho7X\n0gOT1RADHdRlVoqOGGs7xUNBsMJnLUn9p6F0TsNI4gMb1SAi78JI5VEE9aH83ei7\nmaamApx1AgMBAAECggEAHnyJ+Nhu/Wb/XSsiM1FCLlhQEMjE+QTjU6upDzLp54UQ\nH0XDg52SmenugD8u7MuVe8ePmdpBnXp9jO1PpJKsOdPS4jdOvk5RZhv28FTXHLeI\ne91Fxn1mnzmFitKMKuteUMQbxY/53LK6F9DIAGSIsLkzw3bIu+pYCiqZ8zy7hYRW\ndRq46Im5KYEmeb4BpHEEpd7j+X7fxrRmafPBh9KXcY9EZFQy2AJgu5XysizTg1/w\nsl8a/mkk8Rf1QF6WiyJ3an8Ua1kyXwmdGcdpzyf92aEXCyB7OWnO3cT0R1REcXT6\nirPQY/iB53hG2DaqDybsQsHs/VUtGsOvHoPqIcfQOQKBgQD8N9QPzscwYlnyaK31\ny98YCr3qX9iUG4s3qlvymizHsr0FU5oz2EXT8KUIHU1EziYylbDKV2ovs/2F/gAF\nh/IQQ2i9AGNMCy4GW0aqSsTaCKT33Acn3BQWohV0vciQVVJxjvtdecFCdVWGoieu\nnueH8gCBeTrp2VSOE6UCdtDLSQKBgQD3ZOabinEgSWX/x12YQBM9OH+loniBy7rR\nfg81u9lsKjbQ9fiArkeZ3ranKls5mJqhSg28IJmLZeVS8DR82NbUwSWjJhcfxEBn\nVtdsGWue7klW833ERtmnXX0ecoat478JAUFexeD2InwWpnYGbRIjaTZQMo4F+T37\n8+XpbEY7zQKBgQCwYT5sm5dSr8TlL+1PsfXe80wixkpIMQbns7w/aTAdq1JikjeJ\nQBp8/5H5nbw2fM/bmjEbH4yDtaR6+sj7FTnjw7BQVCAcwsi560T8u/Lz4w2yw+1B\nI7fsqAbHMB09Sl2wSmRg10+ecT2RPH7xr/CMcmGGKchYVwK5pOVFVt/m+QKBgQCp\nBDBgt3aOHlcnJieVasE6JC1hFdzKoEtj8IGnrkzejwCgRkuebnLQds3G6zMj6FRM\nOPGlQ4hjKhxAS4cwfFxZQhPaoJ1PwJ5Xe4b1fXB/RkCovPWBcP4mT8K5WHkWt++9\n0TO98ea9gdXRC6y6uy2XL7xBkihhgGSOi5TZonVhSQKBgFTBEoY7HSvPl5lYqAkO\nDXLYNZibqU7G3r131p3MilnTrZ/2oGGcqNt0wHXm4oGTOAOG1ypUG/f3lOZQUlbs\nn5lDLKCSXIFZdb2vrR4cTwXFFEhKra0cwfeN1FYQUli1VvvGeYwmcY04tpmwlEuS\n8Rdjg5cNyzXnwMeGTweKCcJ8\n-----END PRIVATE KEY-----",
+            #     "client_email": "admin@blog-api-project.iam.gserviceaccount.com",
+            #     "client_id": "123456789012345678901",
+            #     "auth_uri": "http://localhost:8002/auth/authorize",
+            #     "token_uri": "http://localhost:8002/auth/token",
+            #     "auth_provider_x509_cert_url": "http://localhost:8002/auth/certs",
+            #     "client_x509_cert_url": "http://localhost:8002/auth/certs/admin",
+            #     "universe_domain": "localhost",
+            #     "scopes": [
+            #       "posts.admin",
+            #       "comments.admin",
+            #       "admin.manage"
+            #     ]
+            #   }
+            # scopes: ["posts.admin", "comments.admin", "admin.manage"]
 
         - tool_type: builtin-group
           group_name: "artifact_management"
