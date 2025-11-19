@@ -167,7 +167,7 @@ curl -X POST http://localhost:8003/oauth/clients \
   -H "Content-Type: application/json" \
   -d '{
     "client_name": "My Library App",
-    "redirect_uris": ["http://localhost:3000/callback"]
+    "redirect_uris": ["http://localhost:9000/callback"]
   }'
 ```
 
@@ -178,7 +178,7 @@ Save the `client_id` and `client_secret` from the response.
 Open in browser (replace `CLIENT_ID`):
 
 ```
-http://localhost:8003/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=http://localhost:3000/callback&state=random_state
+http://localhost:8003/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=http://localhost:9000/callback&state=random_state
 ```
 
 Login with username/password, and you'll be redirected with an authorization code.
@@ -190,7 +190,7 @@ curl -X POST http://localhost:8003/oauth/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=authorization_code" \
   -d "code=YOUR_AUTH_CODE" \
-  -d "redirect_uri=http://localhost:3000/callback" \
+  -d "redirect_uri=http://localhost:9000/callback" \
   -d "client_id=YOUR_CLIENT_ID" \
   -d "client_secret=YOUR_CLIENT_SECRET"
 ```

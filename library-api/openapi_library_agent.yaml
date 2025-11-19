@@ -1,0 +1,99 @@
+# Agent Configuration File: A2A ADK Agents Configurations
+#
+# This file has the configuration for the A2A ADK agents.
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG # Changed from INFO to DEBUG to capture ADK INFO logs
+  log_file: library_agent.log
+
+# Shared SAM config
+!include shared_config.yaml
+
+apps:
+  - name: openapi_library_agent_app
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+  
+    # --- App Level Config ---
+    app_config:
+      
+      namespace: ${NAMESPACE}
+      supports_streaming: true
+      agent_name: "OpenAPILibraryAgent"
+      display_name: "OpenAPI Library Agent"
+
+      model:
+        <<: *general_model
+      instruction: |
+        You are a library management agent that can create, update, delete, and retrieve library items via the Library API.
+
+      tools:
+        - tool_type: openapi
+          specification_url: "http://localhost:8003/openapi.json"
+          base_url: "http://localhost:8003"
+          # deny_list: []
+          # allow_list: []
+
+          auth:
+            # Auth using API Key in header
+            type: apikey
+            in: header
+            name: X-API-Key
+            value: "library-read-key-123" # or "library-write-key-456" or "library-admin-key-789"
+
+            # Auth using oauth2 with user 'admin' (not working yet)
+            # type: oauth2
+            # scheme:
+            #   authorization_url: "http://localhost:8003/oauth/authorize"
+            #   token_url: "http://localhost:8003/oauth/token"
+            #   scopes: {"read": "", "write": "", "admin": ""}
+            #   token_endpoint_auth_method: "client_secret_post"
+            #   grant_types:
+            #     - "authorization_code"
+            #     - "refresh_token"
+            # credential:
+            #   client_id: "INSERT_CLIENT_ID_HERE"
+            #   client_secret: "INSERT_CLIENT_SECRET_HERE"
+
+        - tool_type: builtin-group
+          group_name: "artifact_management"
+        - tool_type: builtin-group
+          group_name: "data_analysis"
+
+      session_service:
+        type: "sql"
+        database_url: "${LIBRARY_AGENT_DATABASE_URL, sqlite:///library-agent.db}"
+        default_behavior: "PERSISTENT"        
+      artifact_service:
+        type: "filesystem"
+        base_path: "/tmp/samv2"
+        artifact_scope: namespace
+      enable_embed_resolution: true
+      enable_artifact_content_instruction: true
+  
+      # --- Agent Card Definition ---
+      agent_card:
+        description: "An agent that interacts with the Library API to manage library items."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text", "file"]
+        skills: []
+          
+  
+      # --- Discovery & Communication ---
+      agent_card_publishing: { interval_seconds: 10 }
+      agent_discovery: { enabled: false }
+      inter_agent_communication:
+        allow_list: []
+        request_timeout_seconds: 120
+      trust_manager:
+        enabled: ${TRUST_MANAGER_ENABLED, false}  # Enable or disable the trust manager
+        card_publish_interval_seconds: 10  # Publish every 10 seconds for testing
+        card_expiration_days: 7  # 1 week for development
+        verification_mode: "permissive"  # Log warnings, don't fail during initial testing
+        clock_skew_tolerance_seconds: 300  # 5 minutes tolerance
+        enable_time_validation: true
+        # JWT Configuration (Phase 2)
+        jwt_default_ttl_seconds: 3600  # 1 hour default JWT lifetime
+        jwt_max_ttl_seconds: 86400     # 24 hours maximum JWT lifetime
