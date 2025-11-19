@@ -27,7 +27,7 @@ A sample blog REST API demonstrating three different authentication methods: pub
 ### 1. Start the PostgreSQL Database
 
 ```bash
-podman run -d --name blog-db \
+podman run -d --name blog-db --replace \
   -e POSTGRES_USER=bloguser \
   -e POSTGRES_PASSWORD=blogpass \
   -e POSTGRES_DB=blog \

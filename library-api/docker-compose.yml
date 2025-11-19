@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  library-db:
+    image: postgres:15-alpine
+    container_name: library-db
+    environment:
+      POSTGRES_USER: libraryuser
+      POSTGRES_PASSWORD: librarypass
+      POSTGRES_DB: library
+    ports:
+      - "5436:5432"
+    volumes:
+      - library-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U libraryuser -d library"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  library-db-data:
