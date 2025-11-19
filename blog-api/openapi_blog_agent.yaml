@@ -4,7 +4,7 @@
 log:
   stdout_log_level: INFO
   log_file_level: DEBUG # Changed from INFO to DEBUG to capture ADK INFO logs
-  log_file: pet_store.log
+  log_file: blog_agent.log
 
 # Shared SAM config
 !include shared_config.yaml
