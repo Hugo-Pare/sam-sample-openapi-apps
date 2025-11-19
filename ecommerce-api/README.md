@@ -48,8 +48,10 @@ pip install -r requirements.txt
 ```bash
 # Make sure virtual environment is activated
 source .venv/bin/activate
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8004
 ```
+
+The API will start on port **8004** by default.
 
 **Custom port:**
 ```bash
@@ -71,12 +73,12 @@ Admin Key (scope: admin):
 
 These keys are displayed in the console when the server starts, but they never change.
 
-### 5. Access the API
+### 4. Access the API
 
-- **API Base URL**: http://localhost:8000
-- **Interactive Documentation (Swagger UI)**: http://localhost:8000/docs
-- **Alternative Documentation (ReDoc)**: http://localhost:8000/redoc
-- **OpenAPI Specification**: http://localhost:8000/openapi.json
+- **API Base URL**: http://localhost:8004
+- **Interactive Documentation (Swagger UI)**: http://localhost:8004/docs
+- **Alternative Documentation (ReDoc)**: http://localhost:8004/redoc
+- **OpenAPI Specification**: http://localhost:8004/openapi.json
 
 ## Authentication
 
@@ -97,7 +99,7 @@ Higher scopes inherit lower scope permissions (admin > write > read).
 Include your API key in the `X-API-Key` header:
 
 ```bash
-curl -H "X-API-Key: YOUR_API_KEY_HERE" http://localhost:8000/products
+curl -H "X-API-Key: YOUR_API_KEY_HERE" http://localhost:8004/products
 ```
 
 ## API Endpoints
@@ -148,19 +150,19 @@ The API automatically loads sample data on first startup:
 View all products (requires read scope or higher):
 
 ```bash
-curl -H "X-API-Key: read-key-12345" http://localhost:8000/products
+curl -H "X-API-Key: read-key-12345" http://localhost:8004/products
 ```
 
 Get products by category:
 
 ```bash
-curl -H "X-API-Key: read-key-12345" http://localhost:8000/products?category_id=2
+curl -H "X-API-Key: read-key-12345" http://localhost:8004/products?category_id=2
 ```
 
 Get a specific product:
 
 ```bash
-curl -H "X-API-Key: read-key-12345" http://localhost:8000/products/1
+curl -H "X-API-Key: read-key-12345" http://localhost:8004/products/1
 ```
 
 ### Using Write Scope
@@ -168,7 +170,7 @@ curl -H "X-API-Key: read-key-12345" http://localhost:8000/products/1
 Create a new product (requires write scope or higher):
 
 ```bash
-curl -X POST http://localhost:8000/products \
+curl -X POST http://localhost:8004/products \
   -H "X-API-Key: write-key-12345" \
   -H "Content-Type: application/json" \
   -d '{
@@ -185,7 +187,7 @@ curl -X POST http://localhost:8000/products \
 Update a product:
 
 ```bash
-curl -X PUT http://localhost:8000/products/1 \
+curl -X PUT http://localhost:8004/products/1 \
   -H "X-API-Key: write-key-12345" \
   -H "Content-Type: application/json" \
   -d '{
@@ -199,14 +201,14 @@ curl -X PUT http://localhost:8000/products/1 \
 Delete a product (requires admin scope):
 
 ```bash
-curl -X DELETE http://localhost:8000/products/1 \
+curl -X DELETE http://localhost:8004/products/1 \
   -H "X-API-Key: admin-key-12345"
 ```
 
 Generate a new API key (requires admin scope):
 
 ```bash
-curl -X POST http://localhost:8000/api-keys \
+curl -X POST http://localhost:8004/api-keys \
   -H "X-API-Key: admin-key-12345" \
   -H "Content-Type: application/json" \
   -d '{
@@ -219,12 +221,12 @@ curl -X POST http://localhost:8000/api-keys \
 List all API keys:
 
 ```bash
-curl -H "X-API-Key: admin-key-12345" http://localhost:8000/api-keys
+curl -H "X-API-Key: admin-key-12345" http://localhost:8004/api-keys
 ```
 
 ## Testing with Swagger UI
 
-1. Navigate to http://localhost:8000/docs
+1. Navigate to http://localhost:8004/docs
 2. Click the **Authorize** button (lock icon)
 3. Enter your API key in the `X-API-Key` field
 4. Click **Authorize**
@@ -293,7 +295,7 @@ This API is fully compliant with OpenAPI 3.0 specification with security schemes
 - Validation rules
 - Example values
 
-Access the spec at: http://localhost:8000/openapi.json
+Access the spec at: http://localhost:8004/openapi.json
 
 The security scheme is defined as:
 ```yaml

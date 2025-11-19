@@ -73,7 +73,7 @@ async def startup_event():
             # Create categories
             category_map = {}
             for cat_data in SAMPLE_CATEGORIES:
-                parent_name = cat_data.pop("parent_name", None)
+                _parent_name = cat_data.pop("parent_name", None)
                 category = models.Category(**cat_data)
                 db.add(category)
                 db.flush()
@@ -410,8 +410,8 @@ def delete_api_key(
 
 
 # Run with: uvicorn app.main:app --reload --port <PORT>
-# Default port is 8000, or set PORT environment variable
+# Default port is 8004, or set PORT environment variable
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", 8004))
     uvicorn.run(app, host="0.0.0.0", port=port)
