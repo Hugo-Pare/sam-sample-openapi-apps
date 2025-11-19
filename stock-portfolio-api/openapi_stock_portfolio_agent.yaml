@@ -1,0 +1,78 @@
+# Agent Configuration File: A2A ADK Agents Configurations
+#
+# This file has the configuration for the A2A ADK agents.
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG # Changed from INFO to DEBUG to capture ADK INFO logs
+  log_file: stock_portfolio_agent.log
+
+# Shared SAM config
+!include shared_config.yaml
+
+apps:
+  - name: openapi_stock_portfolio_agent_app
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+  
+    # --- App Level Config ---
+    app_config:
+      
+      namespace: ${NAMESPACE}
+      supports_streaming: true
+      agent_name: "OpenAPIStockPortfolioAgent"
+      display_name: "OpenAPI Stock Portfolio Agent"
+
+      model:
+        <<: *general_model
+      instruction: |
+        You are a stock portfolio management agent that can create, update, delete, and retrieve stock portfolios via the Stock Portfolio API.
+
+      tools:
+        - tool_type: openapi
+          specification_url: "http://localhost:8001/openapi.json"
+          base_url: "http://localhost:8001"
+          # deny_list: []
+          # allow_list: []
+
+        - tool_type: builtin-group
+          group_name: "artifact_management"
+        - tool_type: builtin-group
+          group_name: "data_analysis"
+
+      session_service:
+        type: "sql"
+        database_url: "${STOCK_PORTFOLIO_AGENT_DATABASE_URL, sqlite:///stock-portfolio-agent.db}"
+        default_behavior: "PERSISTENT"        
+      artifact_service:
+        type: "filesystem"
+        base_path: "/tmp/samv2"
+        artifact_scope: namespace
+      enable_embed_resolution: true
+      enable_artifact_content_instruction: true
+  
+      # --- Agent Card Definition ---
+      agent_card:
+        description: "An agent that interacts with the Stock Portfolio API to manage stock portfolios."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text", "file"]
+        skills: []
+          
+  
+      # --- Discovery & Communication ---
+      agent_card_publishing: { interval_seconds: 10 }
+      agent_discovery: { enabled: false }
+      inter_agent_communication:
+        allow_list: []
+        request_timeout_seconds: 120
+      trust_manager:
+        enabled: ${TRUST_MANAGER_ENABLED, false}  # Enable or disable the trust manager
+        card_publish_interval_seconds: 10  # Publish every 10 seconds for testing
+        card_expiration_days: 7  # 1 week for development
+        verification_mode: "permissive"  # Log warnings, don't fail during initial testing
+        clock_skew_tolerance_seconds: 300  # 5 minutes tolerance
+        enable_time_validation: true
+        # JWT Configuration (Phase 2)
+        jwt_default_ttl_seconds: 3600  # 1 hour default JWT lifetime
+        jwt_max_ttl_seconds: 86400     # 24 hours maximum JWT lifetime

@@ -27,11 +27,11 @@ podman run -d --name stock-portfolio-db \
   -e POSTGRES_USER=stockuser \
   -e POSTGRES_PASSWORD=stockpass \
   -e POSTGRES_DB=stockportfolio \
-  -p 5432:5432 \
+  -p 5437:5432 \
   docker.io/library/postgres:15-alpine
 ```
 
-This will start a PostgreSQL container on port 5432.
+This starts PostgreSQL on port **5437** (to avoid conflicts with other databases).
 
 ### 2. Create Virtual Environment and Install Dependencies
 
@@ -43,12 +43,13 @@ pip install -r requirements.txt
 
 ### 3. Run the API Server
 
-**Default port (8000):**
 ```bash
 # Make sure virtual environment is activated
 source .venv/bin/activate
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8001
 ```
+
+The API will start on port **8001** by default.
 
 **Custom port:**
 ```bash
@@ -62,10 +63,10 @@ PORT=3000 python -m app.main
 
 ### 4. Access the API
 
-- **API Base URL**: http://localhost:8000
-- **Interactive Documentation (Swagger UI)**: http://localhost:8000/docs
-- **Alternative Documentation (ReDoc)**: http://localhost:8000/redoc
-- **OpenAPI Specification**: http://localhost:8000/openapi.json
+- **API Base URL**: http://localhost:8001
+- **Interactive Documentation (Swagger UI)**: http://localhost:8001/docs
+- **Alternative Documentation (ReDoc)**: http://localhost:8001/redoc
+- **OpenAPI Specification**: http://localhost:8001/openapi.json
 
 ## API Endpoints
 
@@ -107,17 +108,17 @@ The API automatically loads sample data on first startup:
 
 ### Get all stocks
 ```bash
-curl http://localhost:8000/stocks
+curl http://localhost:8001/stocks
 ```
 
 ### Get a specific stock by symbol
 ```bash
-curl http://localhost:8000/stocks/symbol/AAPL
+curl http://localhost:8001/stocks/symbol/AAPL
 ```
 
 ### Create a new stock
 ```bash
-curl -X POST http://localhost:8000/stocks \
+curl -X POST http://localhost:8001/stocks \
   -H "Content-Type: application/json" \
   -d '{
     "symbol": "INTC",
@@ -129,12 +130,12 @@ curl -X POST http://localhost:8000/stocks \
 
 ### Get portfolio with metrics
 ```bash
-curl http://localhost:8000/portfolio
+curl http://localhost:8001/portfolio
 ```
 
 ### Add stock to portfolio
 ```bash
-curl -X POST http://localhost:8000/portfolio \
+curl -X POST http://localhost:8001/portfolio \
   -H "Content-Type: application/json" \
   -d '{
     "stock_id": 1,
@@ -147,7 +148,7 @@ curl -X POST http://localhost:8000/portfolio \
 
 ### Get portfolio summary
 ```bash
-curl http://localhost:8000/portfolio/summary/total
+curl http://localhost:8001/portfolio/summary/total
 ```
 
 ## Database Configuration
@@ -155,10 +156,10 @@ curl http://localhost:8000/portfolio/summary/total
 The database connection is hardcoded in `app/database.py`:
 
 ```
-postgresql://stockuser:stockpass@localhost:5432/stockportfolio
+postgresql://stockuser:stockpass@localhost:5437/stockportfolio
 ```
 
-Database credentials are defined in `docker-compose.yml`.
+Note: Port **5437** is used to avoid conflicts with other PostgreSQL instances.
 
 ## Stopping the Application
 
@@ -187,7 +188,7 @@ This API is fully compliant with OpenAPI 3.0 specification. The specification is
 - Data types
 - Example values
 
-Access the spec at: http://localhost:8000/openapi.json
+Access the spec at: http://localhost:8001/openapi.json
 
 ## Project Structure
 
