@@ -443,7 +443,8 @@ async def oauth_authorize_post(
     if state:
         redirect_url += f"&state={state}"
     
-    return RedirectResponse(url=redirect_url)
+    # Use 303 to force GET method on redirect (prevents "Method Not Allowed" errors)
+    return RedirectResponse(url=redirect_url, status_code=303)
 
 
 @app.post("/oauth/token", response_model=schemas.OAuth2TokenResponse, tags=["OAuth2"])
