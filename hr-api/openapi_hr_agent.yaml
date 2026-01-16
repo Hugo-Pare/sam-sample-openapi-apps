@@ -1,0 +1,106 @@
+# Agent Configuration File: A2A ADK Agents Configurations
+#
+# This file has the configuration for the HR API agent.
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: hr_agent.log
+
+# Shared SAM config
+!include shared_config.yaml
+
+apps:
+  - name: openapi_hr_agent_app
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+
+    # --- App Level Config ---
+    app_config:
+
+      namespace: ${NAMESPACE}
+      supports_streaming: true
+      agent_name: "OpenAPIHRAgent"
+      display_name: "OpenAPI HR Agent"
+
+      model:
+        <<: *general_model
+
+      instruction: |
+        You are an HR management agent that can manage employees, departments, and organizational data via the HR API.
+        You handle sensitive employee information and must respect privacy and authorization rules.
+        Always use appropriate OAuth2 scopes when accessing employee salary or department budget information.
+
+      tools:
+        - tool_type: openapi
+          specification_url: "http://localhost:8005/openapi.json"
+          base_url: "http://localhost:8005"
+
+          auth:
+            # OAuth2 Authorization Code Flow with Dynamic Client Registration
+            type: oauth2
+            authorization_url: "http://localhost:8005/oauth/authorize"
+            token_url: "http://localhost:8005/oauth/token"
+            scopes:
+              - employees:read # Read employee information
+              - employees:write # Create and update employees
+              - employees:read:sensitive # View salary information
+              - departments:read # View departments
+              - departments:write # Create and update departments
+              - departments:manage # Full department management including budget
+            token_endpoint_auth_method: "client_secret_post"
+            grant_types:
+              - "authorization_code"
+              - "refresh_token"
+            client_id: "TO_BE_REGISTERED"
+            client_secret: "TO_BE_REGISTERED"
+
+        - tool_type: builtin-group
+          group_name: "artifact_management"
+        - tool_type: builtin-group
+          group_name: "data_analysis"
+
+      session_service:
+        type: "sql"
+        database_url: "${HR_AGENT_DATABASE_URL, sqlite:///hr-agent.db}"
+        default_behavior: "PERSISTENT"
+
+      artifact_service:
+        type: "filesystem"
+        base_path: "/tmp/samv2"
+        artifact_scope: namespace
+
+      enable_embed_resolution: true
+      enable_artifact_content_instruction: true
+
+      # --- Agent Card Definition ---
+      agent_card:
+        description: "An agent that interacts with the HR API to manage employees, departments, and organizational data."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text", "file"]
+        skills: []
+
+      # --- Agent Card Publishing Configuration ---
+      agent_card_publishing:
+        interval_seconds: 10
+
+      # --- Agent Discovery Configuration ---
+      agent_discovery:
+        enabled: false
+
+      # --- Inter-Agent Communication Configuration ---
+      inter_agent_communication:
+        allow_list: []
+        request_timeout_seconds: 120
+
+      # --- Trust Manager Configuration ---
+      trust_manager:
+        enabled: ${TRUST_MANAGER_ENABLED, false}
+        card_publish_interval_seconds: 10
+        card_expiration_days: 7
+        verification_mode: "permissive"
+        clock_skew_tolerance_seconds: 300
+        enable_time_validation: true
+        jwt_default_ttl_seconds: 3600
+        jwt_max_ttl_seconds: 86400

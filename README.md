@@ -1,8 +1,8 @@
 # SAM Sample OpenAPI Apps
 
-This repository contains four sample OpenAPI applications demonstrating different authentication methods for testing the OpenAPI tool in [Solace Agent Mesh (SAM)](https://github.com/SolaceLabs/solace-agent-mesh).
+This repository contains five sample OpenAPI applications demonstrating different authentication methods for testing the OpenAPI tool in [Solace Agent Mesh (SAM)](https://github.com/SolaceLabs/solace-agent-mesh).
 
-> **Note:** The SAM OpenAPI tool does not yet support Basic Auth and OAuth2 authentication methods. These are implemented in the Library API for future compatibility and testing purposes.
+> **Note:** The SAM OpenAPI tool does not yet support Basic Auth and OAuth2 authentication methods. These are implemented in the Library API and HR API for future compatibility and testing purposes.
 
 ## Projects
 
@@ -12,6 +12,9 @@ A blog management API with mixed authentication: public endpoints, API key authe
 ### 🛒 [E-commerce API](./ecommerce-api/README.md)
 An e-commerce product catalog API demonstrating API key authentication with scopes.
 
+### 👔 [HR API](./hr-api/README.md)
+An HR management API with **OAuth2-only authentication**, featuring RFC 8414 Discovery and RFC 7591 Dynamic Client Registration. Manages employees and departments with scope-based access to sensitive fields (salary, budget).
+
 ### 📚 [Library Management API](./library-api/README.md)
 A comprehensive library API demonstrating **all authentication methods**: public endpoints, API Key, Basic Auth, JWT Bearer tokens, and OAuth2 authorization code flow with custom server.
 
@@ -20,12 +23,15 @@ A stock portfolio tracking API with no authentication (open access).
 
 ## Authentication Methods Comparison
 
-| API | No Auth | API Key | Basic Auth | JWT Bearer | Service Account | OAuth2 |
-|-----|---------|---------|------------|------------|-----------------|--------|
-| **Blog API** | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **E-commerce API** | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Library API** | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **Stock Portfolio API** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| API | No Auth | API Key | Basic Auth | JWT Bearer | Service Account | OAuth2 | OAuth2 Discovery | Dynamic Registration |
+|-----|---------|---------|------------|------------|-----------------|--------|------------------|---------------------|
+| **Blog API** | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **E-commerce API** | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **HR API** | ✅* | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| **Library API** | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| **Stock Portfolio API** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+\* HR API has some public endpoints (discovery, health check) but all resource endpoints require OAuth2 authentication.
 
 ### Authentication Method Details
 
@@ -34,7 +40,9 @@ A stock portfolio tracking API with no authentication (open access).
 - **Basic Auth**: HTTP Basic Authentication using username and password
 - **JWT Bearer**: Token-based authentication using JSON Web Tokens
 - **Service Account**: Google-style service account authentication with JWT tokens
-- **OAuth2**: Industry-standard OAuth2 authorization code flow
+- **OAuth2**: Industry-standard OAuth2 authorization code flow with refresh tokens
+- **OAuth2 Discovery**: RFC 8414 Authorization Server Metadata endpoint for programmatic configuration
+- **Dynamic Registration**: RFC 7591 OAuth2 Dynamic Client Registration for self-service client onboarding
 
 ## Getting Started
 
