@@ -1,17 +1,16 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime, date, timedelta
+from datetime import date
+from contextlib import asynccontextmanager
 import os
 
 from app.database import engine, get_db, Base
 from app import models, schemas
 from app.models import ScopeEnum
-from app.auth.api_key import get_api_key, require_scope, generate_api_key, hash_api_key
+from app.auth.api_key import require_scope, hash_api_key
 from app.auth.basic_auth import (
-    get_current_user_basic,
     get_current_active_user,
     get_current_admin_user,
     hash_password,
@@ -19,9 +18,7 @@ from app.auth.basic_auth import (
 )
 from app.auth.jwt_handler import (
     create_access_token,
-    get_current_user_jwt,
-    get_current_active_user_jwt,
-    get_current_admin_user_jwt
+    get_current_active_user_jwt
 )
 from app.auth.oauth2_server import (
     create_oauth2_client,
@@ -35,14 +32,7 @@ from app.auth.oauth2_server import (
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="Library Management API",
-    description="A comprehensive library API demonstrating multiple authentication methods: API Key, Basic Auth, JWT Bearer, and OAuth2",
-    version="1.0.0"
-)
-
-# Sample data
+# Sample data (defined before lifespan function)
 SAMPLE_AUTHORS = [
     {"name": "George Orwell", "bio": "English novelist and essayist", "birth_year": 1903, "nationality": "British"},
     {"name": "Jane Austen", "bio": "English novelist known for romantic fiction", "birth_year": 1775, "nationality": "British"},
@@ -71,12 +61,12 @@ SAMPLE_API_KEYS = [
     {"name": "Admin Master Key", "description": "Full administrative access", "key": "library-admin-key-789", "scope": ScopeEnum.ADMIN},
 ]
 
-
-@app.on_event("startup")
-async def startup_event():
-    """Load sample data on startup if database is empty"""
-    db = next(get_db())
+# Lifespan function to load sample data
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Load sample data
     try:
+        db = next(get_db())
         existing_authors = db.query(models.Author).count()
         if existing_authors == 0:
             # Create authors
@@ -86,9 +76,9 @@ async def startup_event():
                 db.add(author)
                 db.flush()
                 author_map[author_data["name"]] = author.id
-            
+
             db.commit()
-            
+
             # Create books
             for book_data in SAMPLE_BOOKS:
                 author_name = book_data.pop("author_name")
@@ -96,25 +86,25 @@ async def startup_event():
                 if author_id:
                     book = models.Book(**book_data, author_id=author_id)
                     db.add(book)
-            
+
             db.commit()
-            
+
             # Create users
             for user_data in SAMPLE_USERS:
                 password = user_data.pop("password")
                 user = models.User(**user_data, hashed_password=hash_password(password))
                 db.add(user)
-            
+
             db.commit()
-            
+
             # Create API keys
             for key_data in SAMPLE_API_KEYS:
                 plain_key = key_data.pop("key")
                 api_key = models.APIKey(**key_data, key_hash=hash_api_key(plain_key))
                 db.add(api_key)
-            
+
             db.commit()
-            
+
             print("\n" + "="*80)
             print("SAMPLE DATA LOADED - AUTHENTICATION CREDENTIALS")
             print("="*80)
@@ -127,10 +117,23 @@ async def startup_event():
             print("  Username: jane_smith | Password: password123")
             print("  Username: admin      | Password: admin123 (admin user)")
             print("\n" + "="*80 + "\n")
-            
-    finally:
-        db.close()
 
+        db.close()
+    except Exception as e:
+        print(f"ERROR in startup: {e}")
+        import traceback
+        traceback.print_exc()
+
+    yield  # Application runs here
+    # Shutdown: cleanup if needed
+
+# Initialize FastAPI app with lifespan
+app = FastAPI(
+    title="Library Management API",
+    description="A comprehensive library API demonstrating multiple authentication methods: API Key, Basic Auth, JWT Bearer, and OAuth2",
+    version="1.0.0",
+    lifespan=lifespan
+)
 
 # ========================================
 # PUBLIC ENDPOINTS (No Authentication)
@@ -378,7 +381,7 @@ async def oauth_authorize(
     # Validate client
     client = db.query(models.OAuth2Client).filter(
         models.OAuth2Client.client_id == client_id,
-        models.OAuth2Client.is_active == True
+        models.OAuth2Client.is_active
     ).first()
     
     if not client:

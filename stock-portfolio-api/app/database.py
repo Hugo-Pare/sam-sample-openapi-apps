@@ -1,9 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
 
-# Hardcoded database URL (port 5437 to avoid conflicts)
-SQLALCHEMY_DATABASE_URL = "postgresql://stockuser:stockpass@localhost:5437/stockportfolio"
+# Get database URL from environment variable or use default
+SQLALCHEMY_DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://stockuser:stockpass@localhost:5432/stockportfolio"
+)
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

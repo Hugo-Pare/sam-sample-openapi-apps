@@ -1,9 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
 
-# Hardcoded database URL (port 5434 to avoid conflict with other databases)
-SQLALCHEMY_DATABASE_URL = "postgresql://ecomuser:ecompass@localhost:5434/ecommerce"
+# Get database URL from environment variable or use default
+SQLALCHEMY_DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://ecomuser:ecompass@localhost:5434/ecommerce"
+)
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

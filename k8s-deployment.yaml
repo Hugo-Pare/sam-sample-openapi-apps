@@ -1,0 +1,308 @@
+---
+# Shared PersistentVolumeClaim for all databases
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: api-servers-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+# Single Pod Deployment with all services
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-servers
+  labels:
+    app: api-servers
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-servers
+  template:
+    metadata:
+      labels:
+        app: api-servers
+    spec:
+      containers:
+      # E-commerce PostgreSQL Database
+      - name: ecommerce-db
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5434
+          name: ecommerce-db
+        env:
+        - name: POSTGRES_DB
+          value: "ecommerce"
+        - name: POSTGRES_USER
+          value: "ecomuser"
+        - name: POSTGRES_PASSWORD
+          value: "ecompass"
+        - name: PGPORT
+          value: "5434"
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+          subPath: ecommerce
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U ecomuser -d ecommerce -p 5434
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U ecomuser -d ecommerce -p 5434
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      # Stock Portfolio PostgreSQL Database
+      - name: stock-db
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+          name: stock-db
+        env:
+        - name: POSTGRES_DB
+          value: "stockportfolio"
+        - name: POSTGRES_USER
+          value: "stockuser"
+        - name: POSTGRES_PASSWORD
+          value: "stockpass"
+        - name: PGPORT
+          value: "5432"
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+          subPath: stock
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U stockuser -d stockportfolio -p 5432
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U stockuser -d stockportfolio -p 5432
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      # E-commerce API Application
+      - name: ecommerce-api
+        image: 868978040651.dkr.ecr.us-east-1.amazonaws.com/sample-ecommerce-api:0.0.3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8004
+          name: ecommerce-api
+        env:
+        - name: PORT
+          value: "8004"
+        - name: DATABASE_URL
+          value: "postgresql://ecomuser:ecompass@localhost:5434/ecommerce"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      # Stock Portfolio API Application
+      - name: stock-api
+        image: 868978040651.dkr.ecr.us-east-1.amazonaws.com/sample-stock-api:0.0.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+          name: stock-api
+        env:
+        - name: PORT
+          value: "8001"
+        - name: DATABASE_URL
+          value: "postgresql://stockuser:stockpass@localhost:5432/stockportfolio"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      # Library PostgreSQL Database
+      - name: library-db
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5436
+          name: library-db
+        env:
+        - name: POSTGRES_DB
+          value: "library"
+        - name: POSTGRES_USER
+          value: "libraryuser"
+        - name: POSTGRES_PASSWORD
+          value: "librarypass"
+        - name: PGPORT
+          value: "5436"
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+          subPath: library
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U libraryuser -d library -p 5436
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U libraryuser -d library -p 5436
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      # Library API Application
+      - name: library-api
+        image: 868978040651.dkr.ecr.us-east-1.amazonaws.com/sample-library-api:0.0.3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8003
+          name: library-api
+        env:
+        - name: PORT
+          value: "8003"
+        - name: DATABASE_URL
+          value: "postgresql://libraryuser:librarypass@localhost:5436/library"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: api-servers-db-pvc
+---
+# Service for E-commerce API
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-api
+spec:
+  selector:
+    app: api-servers
+  ports:
+  - port: 8004
+    targetPort: 8004
+    name: ecommerce
+  type: ClusterIP
+---
+# Service for Stock Portfolio API
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock-api
+spec:
+  selector:
+    app: api-servers
+  ports:
+  - port: 8001
+    targetPort: 8001
+    name: stock
+  type: ClusterIP
+---
+# Service for Library API
+apiVersion: v1
+kind: Service
+metadata:
+  name: library-api
+spec:
+  selector:
+    app: api-servers
+  ports:
+  - port: 8003
+    targetPort: 8003
+    name: library
+  type: ClusterIP

@@ -1,0 +1,1385 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Library Management API",
+        "description": "A comprehensive library API demonstrating multiple authentication methods: API Key, Basic Auth, JWT Bearer, and OAuth2",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Read Root",
+                "description": "Root endpoint with API information",
+                "operationId": "read_root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Health Check",
+                "description": "Health check endpoint",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/books": {
+            "get": {
+                "tags": [
+                    "Books (Public)"
+                ],
+                "summary": "Get Books Public",
+                "description": "Get all books (public, no authentication required)",
+                "operationId": "get_books_public_books_get",
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    },
+                    {
+                        "name": "genre",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Genre"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    },
+                                    "title": "Response Get Books Public Books Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Books (API Key)"
+                ],
+                "summary": "Create Book Apikey",
+                "description": "Create a book (requires API key with write or admin scope)",
+                "operationId": "create_book_apikey_books_post",
+                "security": [
+                    {
+                        "APIKeyHeader": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{book_id}": {
+            "get": {
+                "tags": [
+                    "Books (Public)"
+                ],
+                "summary": "Get Book Public",
+                "description": "Get a specific book (public, no authentication required)",
+                "operationId": "get_book_public_books__book_id__get",
+                "parameters": [
+                    {
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Book Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Books (API Key)"
+                ],
+                "summary": "Delete Book Apikey",
+                "description": "Delete a book (requires API key with admin scope)",
+                "operationId": "delete_book_apikey_books__book_id__delete",
+                "security": [
+                    {
+                        "APIKeyHeader": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Book Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/authors": {
+            "get": {
+                "tags": [
+                    "Authors (Public)"
+                ],
+                "summary": "Get Authors Public",
+                "description": "Get all authors (public, no authentication required)",
+                "operationId": "get_authors_public_authors_get",
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Author"
+                                    },
+                                    "title": "Response Get Authors Public Authors Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "Users (Basic Auth)"
+                ],
+                "summary": "Get Current User Info",
+                "description": "Get current user information (requires Basic Auth)",
+                "operationId": "get_current_user_info_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ]
+            }
+        },
+        "/my-loans": {
+            "get": {
+                "tags": [
+                    "Loans (Basic Auth)"
+                ],
+                "summary": "Get My Loans",
+                "description": "Get current user's loans (requires Basic Auth)",
+                "operationId": "get_my_loans_my_loans_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Loan"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get My Loans My Loans Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ]
+            }
+        },
+        "/loans": {
+            "post": {
+                "tags": [
+                    "Loans (Basic Auth)"
+                ],
+                "summary": "Create Loan",
+                "description": "Borrow a book (requires Basic Auth)",
+                "operationId": "create_loan_loans_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoanCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Loan"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ]
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication (JWT)"
+                ],
+                "summary": "Login For Jwt",
+                "description": "Login with username/password to get JWT token",
+                "operationId": "login_for_jwt_auth_login_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jwt/me": {
+            "get": {
+                "tags": [
+                    "Users (JWT Bearer)"
+                ],
+                "summary": "Get Current User Jwt Endpoint",
+                "description": "Get current user information (requires JWT Bearer token)",
+                "operationId": "get_current_user_jwt_endpoint_jwt_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/jwt/my-loans": {
+            "get": {
+                "tags": [
+                    "Loans (JWT Bearer)"
+                ],
+                "summary": "Get My Loans Jwt",
+                "description": "Get current user's loans (requires JWT Bearer token)",
+                "operationId": "get_my_loans_jwt_jwt_my_loans_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Loan"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get My Loans Jwt Jwt My Loans Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/oauth/clients": {
+            "post": {
+                "tags": [
+                    "OAuth2"
+                ],
+                "summary": "Create Oauth Client",
+                "description": "Create OAuth2 client (requires admin Basic Auth)",
+                "operationId": "create_oauth_client_oauth_clients_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OAuth2ClientCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuth2ClientResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ]
+            }
+        },
+        "/oauth/authorize": {
+            "get": {
+                "tags": [
+                    "OAuth2"
+                ],
+                "summary": "Oauth Authorize",
+                "description": "OAuth2 authorization endpoint (shows login form)",
+                "operationId": "oauth_authorize_oauth_authorize_get",
+                "parameters": [
+                    {
+                        "name": "response_type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Response Type"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Client Id"
+                        }
+                    },
+                    {
+                        "name": "redirect_uri",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Redirect Uri"
+                        }
+                    },
+                    {
+                        "name": "scope",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Scope"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "State"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "OAuth2"
+                ],
+                "summary": "Oauth Authorize Post",
+                "description": "Process OAuth2 authorization (handles login)",
+                "operationId": "oauth_authorize_post_oauth_authorize_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_oauth_authorize_post_oauth_authorize_post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/token": {
+            "post": {
+                "tags": [
+                    "OAuth2"
+                ],
+                "summary": "Oauth Token",
+                "description": "OAuth2 token endpoint (exchange code for access token)",
+                "operationId": "oauth_token_oauth_token_post",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_oauth_token_oauth_token_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuth2TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Author": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "bio": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Bio"
+                    },
+                    "birth_year": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Birth Year"
+                    },
+                    "nationality": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Nationality"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "id"
+                ],
+                "title": "Author"
+            },
+            "Body_oauth_authorize_post_oauth_authorize_post": {
+                "properties": {
+                    "client_id": {
+                        "type": "string",
+                        "title": "Client Id"
+                    },
+                    "redirect_uri": {
+                        "type": "string",
+                        "title": "Redirect Uri"
+                    },
+                    "response_type": {
+                        "type": "string",
+                        "title": "Response Type"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    },
+                    "scope": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Scope"
+                    },
+                    "state": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "State"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "client_id",
+                    "redirect_uri",
+                    "response_type",
+                    "username",
+                    "password"
+                ],
+                "title": "Body_oauth_authorize_post_oauth_authorize_post"
+            },
+            "Body_oauth_token_oauth_token_post": {
+                "properties": {
+                    "grant_type": {
+                        "type": "string",
+                        "title": "Grant Type"
+                    },
+                    "code": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Code"
+                    },
+                    "redirect_uri": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Redirect Uri"
+                    },
+                    "client_id": {
+                        "type": "string",
+                        "title": "Client Id"
+                    },
+                    "client_secret": {
+                        "type": "string",
+                        "title": "Client Secret"
+                    },
+                    "refresh_token": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Refresh Token"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "grant_type",
+                    "client_id",
+                    "client_secret"
+                ],
+                "title": "Body_oauth_token_oauth_token_post"
+            },
+            "Book": {
+                "properties": {
+                    "isbn": {
+                        "type": "string",
+                        "maxLength": 13,
+                        "minLength": 10,
+                        "title": "Isbn"
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "author_id": {
+                        "type": "integer",
+                        "title": "Author Id"
+                    },
+                    "genre": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Genre"
+                    },
+                    "published_year": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Published Year"
+                    },
+                    "total_copies": {
+                        "type": "integer",
+                        "title": "Total Copies",
+                        "default": 1
+                    },
+                    "available_copies": {
+                        "type": "integer",
+                        "title": "Available Copies",
+                        "default": 1
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/Author"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "isbn",
+                    "title",
+                    "author_id",
+                    "id",
+                    "author"
+                ],
+                "title": "Book"
+            },
+            "BookCreate": {
+                "properties": {
+                    "isbn": {
+                        "type": "string",
+                        "maxLength": 13,
+                        "minLength": 10,
+                        "title": "Isbn"
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "author_id": {
+                        "type": "integer",
+                        "title": "Author Id"
+                    },
+                    "genre": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Genre"
+                    },
+                    "published_year": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Published Year"
+                    },
+                    "total_copies": {
+                        "type": "integer",
+                        "title": "Total Copies",
+                        "default": 1
+                    },
+                    "available_copies": {
+                        "type": "integer",
+                        "title": "Available Copies",
+                        "default": 1
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "isbn",
+                    "title",
+                    "author_id"
+                ],
+                "title": "BookCreate"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "Loan": {
+                "properties": {
+                    "book_id": {
+                        "type": "integer",
+                        "title": "Book Id"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Due Date"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "title": "User Id"
+                    },
+                    "loan_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Loan Date"
+                    },
+                    "return_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Return Date"
+                    },
+                    "is_returned": {
+                        "type": "boolean",
+                        "title": "Is Returned"
+                    },
+                    "book": {
+                        "$ref": "#/components/schemas/Book"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "book_id",
+                    "due_date",
+                    "id",
+                    "user_id",
+                    "loan_date",
+                    "return_date",
+                    "is_returned",
+                    "book"
+                ],
+                "title": "Loan"
+            },
+            "LoanCreate": {
+                "properties": {
+                    "book_id": {
+                        "type": "integer",
+                        "title": "Book Id"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Due Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "book_id",
+                    "due_date"
+                ],
+                "title": "LoanCreate"
+            },
+            "LoginRequest": {
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "title": "LoginRequest"
+            },
+            "OAuth2ClientCreate": {
+                "properties": {
+                    "client_name": {
+                        "type": "string",
+                        "title": "Client Name"
+                    },
+                    "redirect_uris": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Redirect Uris"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "client_name",
+                    "redirect_uris"
+                ],
+                "title": "OAuth2ClientCreate"
+            },
+            "OAuth2ClientResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "client_id": {
+                        "type": "string",
+                        "title": "Client Id"
+                    },
+                    "client_name": {
+                        "type": "string",
+                        "title": "Client Name"
+                    },
+                    "redirect_uris": {
+                        "type": "string",
+                        "title": "Redirect Uris"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Is Active"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "client_secret": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Client Secret"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "client_id",
+                    "client_name",
+                    "redirect_uris",
+                    "is_active",
+                    "created_at"
+                ],
+                "title": "OAuth2ClientResponse"
+            },
+            "OAuth2TokenResponse": {
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "title": "Access Token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "title": "Token Type",
+                        "default": "Bearer"
+                    },
+                    "expires_in": {
+                        "type": "integer",
+                        "title": "Expires In"
+                    },
+                    "refresh_token": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Refresh Token"
+                    },
+                    "scope": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Scope"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_token",
+                    "expires_in"
+                ],
+                "title": "OAuth2TokenResponse"
+            },
+            "Token": {
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "title": "Access Token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "title": "Token Type",
+                        "default": "bearer"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_token"
+                ],
+                "title": "Token"
+            },
+            "User": {
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "full_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Full Name"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Is Active"
+                    },
+                    "is_admin": {
+                        "type": "boolean",
+                        "title": "Is Admin"
+                    },
+                    "member_since": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Member Since"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "username",
+                    "email",
+                    "id",
+                    "is_active",
+                    "is_admin",
+                    "member_since"
+                ],
+                "title": "User"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "APIKeyHeader": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-Key"
+            },
+            "HTTPBasic": {
+                "type": "http",
+                "scheme": "basic"
+            },
+            "HTTPBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

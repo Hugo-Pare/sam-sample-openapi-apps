@@ -1,0 +1,1083 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Stock Portfolio API",
+        "description": "A sample API for managing stock portfolios with OpenAPI specification",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Read Root",
+                "description": "Root endpoint with API information",
+                "operationId": "read_root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Health Check",
+                "description": "Health check endpoint",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stocks": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get Stocks",
+                "description": "Get all stocks with optional filtering by sector",
+                "operationId": "get_stocks_stocks_get",
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    },
+                    {
+                        "name": "sector",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "title": "Sector"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Stock"
+                                    },
+                                    "title": "Response Get Stocks Stocks Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Create Stock",
+                "description": "Create a new stock",
+                "operationId": "create_stock_stocks_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StockCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Stock"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stocks/{stock_id}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get Stock",
+                "description": "Get a specific stock by ID",
+                "operationId": "get_stock_stocks__stock_id__get",
+                "parameters": [
+                    {
+                        "name": "stock_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Stock Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Stock"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Update Stock",
+                "description": "Update a stock",
+                "operationId": "update_stock_stocks__stock_id__put",
+                "parameters": [
+                    {
+                        "name": "stock_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Stock Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StockUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Stock"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Delete Stock",
+                "description": "Delete a stock",
+                "operationId": "delete_stock_stocks__stock_id__delete",
+                "parameters": [
+                    {
+                        "name": "stock_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Stock Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stocks/symbol/{symbol}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get Stock By Symbol",
+                "description": "Get a stock by its symbol",
+                "operationId": "get_stock_by_symbol_stocks_symbol__symbol__get",
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Symbol"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Stock"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portfolio": {
+            "get": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Get Portfolio",
+                "description": "Get all portfolio holdings with calculated metrics",
+                "operationId": "get_portfolio_portfolio_get",
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PortfolioWithMetrics"
+                                    },
+                                    "title": "Response Get Portfolio Portfolio Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Create Portfolio Holding",
+                "description": "Add a stock to portfolio",
+                "operationId": "create_portfolio_holding_portfolio_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PortfolioCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Portfolio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portfolio/{holding_id}": {
+            "get": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Get Portfolio Holding",
+                "description": "Get a specific portfolio holding with metrics",
+                "operationId": "get_portfolio_holding_portfolio__holding_id__get",
+                "parameters": [
+                    {
+                        "name": "holding_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Holding Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PortfolioWithMetrics"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Update Portfolio Holding",
+                "description": "Update a portfolio holding",
+                "operationId": "update_portfolio_holding_portfolio__holding_id__put",
+                "parameters": [
+                    {
+                        "name": "holding_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Holding Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PortfolioUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Portfolio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Delete Portfolio Holding",
+                "description": "Remove a holding from portfolio",
+                "operationId": "delete_portfolio_holding_portfolio__holding_id__delete",
+                "parameters": [
+                    {
+                        "name": "holding_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Holding Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portfolio/summary/total": {
+            "get": {
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Get Portfolio Summary",
+                "description": "Get portfolio summary with total metrics",
+                "operationId": "get_portfolio_summary_portfolio_summary_total_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PortfolioSummary"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "Portfolio": {
+                "properties": {
+                    "stock_id": {
+                        "type": "integer",
+                        "title": "Stock Id",
+                        "description": "ID of the stock"
+                    },
+                    "shares": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Shares",
+                        "description": "Number of shares"
+                    },
+                    "purchase_price": {
+                        "type": "string",
+                        "title": "Purchase Price",
+                        "description": "Purchase price per share"
+                    },
+                    "purchase_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Purchase Date",
+                        "description": "Date of purchase"
+                    },
+                    "notes": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Notes",
+                        "description": "Additional notes"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    },
+                    "stock": {
+                        "$ref": "#/components/schemas/Stock"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "stock_id",
+                    "shares",
+                    "purchase_price",
+                    "purchase_date",
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "stock"
+                ],
+                "title": "Portfolio"
+            },
+            "PortfolioCreate": {
+                "properties": {
+                    "stock_id": {
+                        "type": "integer",
+                        "title": "Stock Id",
+                        "description": "ID of the stock"
+                    },
+                    "shares": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Shares",
+                        "description": "Number of shares"
+                    },
+                    "purchase_price": {
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "exclusiveMinimum": 0.0
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Purchase Price",
+                        "description": "Purchase price per share"
+                    },
+                    "purchase_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Purchase Date",
+                        "description": "Date of purchase"
+                    },
+                    "notes": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Notes",
+                        "description": "Additional notes"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "stock_id",
+                    "shares",
+                    "purchase_price",
+                    "purchase_date"
+                ],
+                "title": "PortfolioCreate"
+            },
+            "PortfolioSummary": {
+                "properties": {
+                    "total_holdings": {
+                        "type": "integer",
+                        "title": "Total Holdings"
+                    },
+                    "total_invested": {
+                        "type": "string",
+                        "title": "Total Invested"
+                    },
+                    "current_value": {
+                        "type": "string",
+                        "title": "Current Value"
+                    },
+                    "total_profit_loss": {
+                        "type": "string",
+                        "title": "Total Profit Loss"
+                    },
+                    "profit_loss_percentage": {
+                        "type": "string",
+                        "title": "Profit Loss Percentage"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "total_holdings",
+                    "total_invested",
+                    "current_value",
+                    "total_profit_loss",
+                    "profit_loss_percentage"
+                ],
+                "title": "PortfolioSummary"
+            },
+            "PortfolioUpdate": {
+                "properties": {
+                    "shares": {
+                        "anyOf": [
+                            {
+                                "type": "integer",
+                                "exclusiveMinimum": 0.0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Shares"
+                    },
+                    "purchase_price": {
+                        "anyOf": [
+                            {
+                                "anyOf": [
+                                    {
+                                        "type": "number"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "gt": 0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Purchase Price"
+                    },
+                    "purchase_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Purchase Date"
+                    },
+                    "notes": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Notes"
+                    }
+                },
+                "type": "object",
+                "title": "PortfolioUpdate"
+            },
+            "PortfolioWithMetrics": {
+                "properties": {
+                    "stock_id": {
+                        "type": "integer",
+                        "title": "Stock Id",
+                        "description": "ID of the stock"
+                    },
+                    "shares": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Shares",
+                        "description": "Number of shares"
+                    },
+                    "purchase_price": {
+                        "type": "string",
+                        "title": "Purchase Price",
+                        "description": "Purchase price per share"
+                    },
+                    "purchase_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Purchase Date",
+                        "description": "Date of purchase"
+                    },
+                    "notes": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Notes",
+                        "description": "Additional notes"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    },
+                    "stock": {
+                        "$ref": "#/components/schemas/Stock"
+                    },
+                    "current_value": {
+                        "type": "string",
+                        "title": "Current Value"
+                    },
+                    "total_cost": {
+                        "type": "string",
+                        "title": "Total Cost"
+                    },
+                    "profit_loss": {
+                        "type": "string",
+                        "title": "Profit Loss"
+                    },
+                    "profit_loss_percentage": {
+                        "type": "string",
+                        "title": "Profit Loss Percentage"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "stock_id",
+                    "shares",
+                    "purchase_price",
+                    "purchase_date",
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "stock",
+                    "current_value",
+                    "total_cost",
+                    "profit_loss",
+                    "profit_loss_percentage"
+                ],
+                "title": "PortfolioWithMetrics"
+            },
+            "Stock": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "title": "Symbol",
+                        "description": "Stock ticker symbol"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "title": "Company Name",
+                        "description": "Company name"
+                    },
+                    "sector": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "title": "Sector",
+                        "description": "Business sector"
+                    },
+                    "current_price": {
+                        "type": "string",
+                        "title": "Current Price",
+                        "description": "Current stock price"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "company_name",
+                    "sector",
+                    "current_price",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "Stock"
+            },
+            "StockCreate": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "title": "Symbol",
+                        "description": "Stock ticker symbol"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "title": "Company Name",
+                        "description": "Company name"
+                    },
+                    "sector": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "title": "Sector",
+                        "description": "Business sector"
+                    },
+                    "current_price": {
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "exclusiveMinimum": 0.0
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Current Price",
+                        "description": "Current stock price"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "company_name",
+                    "sector",
+                    "current_price"
+                ],
+                "title": "StockCreate"
+            },
+            "StockUpdate": {
+                "properties": {
+                    "symbol": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 10
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Symbol"
+                    },
+                    "company_name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Company Name"
+                    },
+                    "sector": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 100
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sector"
+                    },
+                    "current_price": {
+                        "anyOf": [
+                            {
+                                "anyOf": [
+                                    {
+                                        "type": "number"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "gt": 0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Current Price"
+                    }
+                },
+                "type": "object",
+                "title": "StockUpdate"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

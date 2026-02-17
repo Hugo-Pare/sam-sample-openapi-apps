@@ -1,4 +1,5 @@
-from fastapi import Header, HTTPException, status, Depends
+from fastapi import Security, HTTPException, status, Depends
+from fastapi.security import APIKeyHeader
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from datetime import datetime
@@ -7,6 +8,9 @@ from app.database import get_db
 from app.models import APIKey, ScopeEnum
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# API Key header security scheme
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
 def hash_api_key(key: str) -> str:
@@ -25,16 +29,23 @@ def generate_api_key() -> str:
 
 
 async def get_api_key(
-    x_api_key: str = Header(..., description="API Key for authentication"),
+    x_api_key: str = Security(api_key_header),
     db: Session = Depends(get_db)
 ) -> APIKey:
     """
     Validate API key and return the APIKey object.
     Raises 401 if key is invalid or inactive.
     """
+    if not x_api_key:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="API key required",
+            headers={"WWW-Authenticate": "ApiKey"}
+        )
+
     # Query all API keys to check against the provided key
     api_keys = db.query(APIKey).filter(APIKey.is_active == True).all()
-    
+
     for api_key in api_keys:
         if verify_api_key(x_api_key, api_key.key_hash):
             # Check if key is expired
@@ -44,7 +55,7 @@ async def get_api_key(
                     detail="API key has expired"
                 )
             return api_key
-    
+
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid or inactive API key"
