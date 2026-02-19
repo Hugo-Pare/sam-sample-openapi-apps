@@ -44,7 +44,7 @@ async def get_api_key(
         )
 
     # Query all API keys to check against the provided key
-    api_keys = db.query(APIKey).filter(APIKey.is_active == True).all()
+    api_keys = db.query(APIKey).filter(APIKey.is_active).all()
 
     for api_key in api_keys:
         if verify_api_key(x_api_key, api_key.key_hash):

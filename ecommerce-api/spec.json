@@ -58,7 +58,7 @@
                     {
                         "name": "skip",
                         "in": "query",
-                        "required": false,
+                        "required": "false",
                         "schema": {
                             "type": "integer",
                             "default": 0,
@@ -68,23 +68,12 @@
                     {
                         "name": "limit",
                         "in": "query",
-                        "required": false,
+                        "required": "false",
                         "schema": {
                             "type": "integer",
                             "default": 100,
                             "title": "Limit"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -121,21 +110,8 @@
                 "summary": "Create Category",
                 "description": "Create a new category (requires write scope)",
                 "operationId": "create_category_categories_post",
-                "parameters": [
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
-                    }
-                ],
                 "requestBody": {
-                    "required": true,
+                    "required": "true",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -180,22 +156,11 @@
                     {
                         "name": "category_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Category Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -232,26 +197,15 @@
                     {
                         "name": "category_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Category Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "requestBody": {
-                    "required": true,
+                    "required": "true",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -294,22 +248,11 @@
                     {
                         "name": "category_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Category Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -341,7 +284,7 @@
                     {
                         "name": "skip",
                         "in": "query",
-                        "required": false,
+                        "required": "false",
                         "schema": {
                             "type": "integer",
                             "default": 0,
@@ -351,7 +294,7 @@
                     {
                         "name": "limit",
                         "in": "query",
-                        "required": false,
+                        "required": "false",
                         "schema": {
                             "type": "integer",
                             "default": 100,
@@ -361,7 +304,7 @@
                     {
                         "name": "category_id",
                         "in": "query",
-                        "required": false,
+                        "required": "false",
                         "schema": {
                             "type": "integer",
                             "title": "Category Id"
@@ -370,22 +313,11 @@
                     {
                         "name": "is_active",
                         "in": "query",
-                        "required": false,
+                        "required": "false",
                         "schema": {
                             "type": "boolean",
                             "title": "Is Active"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -422,21 +354,8 @@
                 "summary": "Create Product",
                 "description": "Create a new product (requires write scope)",
                 "operationId": "create_product_products_post",
-                "parameters": [
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
-                    }
-                ],
                 "requestBody": {
-                    "required": true,
+                    "required": "true",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -481,22 +400,11 @@
                     {
                         "name": "product_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Product Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -533,26 +441,15 @@
                     {
                         "name": "product_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Product Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "requestBody": {
-                    "required": true,
+                    "required": "true",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -595,22 +492,11 @@
                     {
                         "name": "product_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Product Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -642,22 +528,11 @@
                     {
                         "name": "sku",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "string",
                             "title": "Sku"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -692,19 +567,6 @@
                 "summary": "Get Api Keys",
                 "description": "List all API keys (requires admin scope)",
                 "operationId": "get_api_keys_api_keys_get",
-                "parameters": [
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Successful Response",
@@ -739,21 +601,8 @@
                 "summary": "Create Api Key",
                 "description": "Generate a new API key (requires admin scope)",
                 "operationId": "create_api_key_api_keys_post",
-                "parameters": [
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
-                    }
-                ],
                 "requestBody": {
-                    "required": true,
+                    "required": "true",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -798,22 +647,11 @@
                     {
                         "name": "key_id",
                         "in": "path",
-                        "required": true,
+                        "required": "true",
                         "schema": {
                             "type": "integer",
                             "title": "Key Id"
                         }
-                    },
-                    {
-                        "name": "x-api-key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "API Key for authentication",
-                            "title": "X-Api-Key"
-                        },
-                        "description": "API Key for authentication"
                     }
                 ],
                 "responses": {
@@ -1197,7 +1035,7 @@
                     "is_active": {
                         "type": "boolean",
                         "title": "Is Active",
-                        "default": true
+                        "default": "true"
                     },
                     "id": {
                         "type": "integer",
@@ -1290,7 +1128,7 @@
                     "is_active": {
                         "type": "boolean",
                         "title": "Is Active",
-                        "default": true
+                        "default": "true"
                     }
                 },
                 "type": "object",
@@ -1451,6 +1289,18 @@
                 ],
                 "title": "ValidationError"
             }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-Key"
+            }
         }
-    }
+    },
+    "security": [
+        {
+            "ApiKeyAuth": []
+        }
+    ]
 }
